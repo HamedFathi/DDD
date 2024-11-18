@@ -84,6 +84,21 @@ public class Book : Entity<Guid>, IAggregateRoot
 
     }
 
+    public Result<bool> DecreaseMaxCopies(int reducedCopies)
+    {
+        if (reducedCopies <= 0)
+        {
+            return Result<bool>.Failure(false, "Number of copies to reduce must be greater than zero.");
+        }
+        if (MaxCopies - reducedCopies < _copies.Count)
+        {
+            return Result<bool>.Failure(false, "Cannot reduce the number of copies below the current number of existing copies.");
+        }
+
+        MaxCopies -= reducedCopies;
+        return Result<bool>.Success(true);
+    }
+
     public override string ToString()
     {
         return $"{Title.Value} by {Authors}";
