@@ -99,6 +99,27 @@ public class Book : Entity<Guid>, IAggregateRoot
         return Result<bool>.Success(true);
     }
 
+    public Result<bool> ReportDamagedCopy(BookCopy copy)
+    {
+        if (_copies.Contains(copy))
+        {
+            copy.MarkAsDamaged();
+            return Result<bool>.Success(true, "The book copy has been marked as damaged.");
+        }
+
+        return Result<bool>.Failure("Book copy not found.");
+    }
+
+    public void RemoveDamagedCopies()
+    {
+        var damagedCopies = _copies.Where(copy => copy.Condition == CopyCondition.Damaged).ToList();
+
+        foreach (var copy in damagedCopies)
+        {
+            _copies.Remove(copy);
+        }
+    }
+
     public override string ToString()
     {
         return $"{Title.Value} by {Authors}";

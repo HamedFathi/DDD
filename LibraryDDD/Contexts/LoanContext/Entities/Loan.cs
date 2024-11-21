@@ -55,12 +55,16 @@ public class Loan : Entity<Guid>
 
     public bool IsOverdue()
     {
-        if (Status == LoanStatus.Active && DateTime.Now > LoanPeriod.EndDate)
-        {
-            Status = LoanStatus.Overdue;
-            return true;
-        }
-        return false;
+        return Status == LoanStatus.Active && DateTime.Now > LoanPeriod.EndDate);
+    }
+
+    public Result<bool> MarkAsOverdue()
+    {
+        if (!IsOverdue())
+            return Result<bool>.Failure("Loan is not overdue.");
+
+        Status = LoanStatus.Overdue;
+        return Result<bool>.Success(true);
     }
 
     public void ExtendLoanPeriod(DateTime newEndDate)

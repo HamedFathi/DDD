@@ -129,6 +129,7 @@ public class Member : Entity<Guid>, IAggregateRoot
         loan.Return();
         if (loan.IsOverdue())
         {
+            loan.MarkAsOverdue();
             var overdueDays = (DateTime.Now - loan.LoanPeriod.EndDate).Days;
             var overdueFineAmount = Money.Create(overdueDays * 1, PreferredCurrency);
             if (overdueFineAmount.IsSuccess)
